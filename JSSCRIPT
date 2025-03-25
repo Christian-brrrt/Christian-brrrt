@@ -1,0 +1,146 @@
+let playerName = "";
+let score = 0;
+let questionIndex = 0;
+let timeLeft = 15;
+let timer;
+let currentDifficulty = "";
+let playerScores = []; // Array to hold player scores
+
+document.getElementById("nameSubmit").addEventListener("click", () => {
+    playerName = document.getElementById("playerName").value.trim();
+    if (playerName) {
+        document.getElementById("nameInputSection").style.display = "none";
+        document.getElementById("difficultySelection").style.display = "block";
+    }
+});
+
+document.querySelectorAll(".difficulty-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        currentDifficulty = btn.getAttribute("data-mode"); // Store selected difficulty
+        startGame(currentDifficulty);
+    });
+});
+
+function startGame(difficulty) {
+    document.getElementById("difficultySelection").style.display = "none";
+    document.getElementById("gameSection").style.display = "block";
+    score = 0;
+    questionIndex = 0;
+    generateQuestion(difficulty);
+}
+
+function generateQuestion(difficulty) {
+    let num1 = Math.floor(Math.random() * 10) + 1;
+    let num2 = Math.floor(Math.random() * 10) + 1;
+    let correctAnswer;
+    let questionText;
+
+    if (difficulty === "easy") {
+        correctAnswer = num1 + num2;
+        questionText = `${num1} + ${num2} = ?`;
+    } else if (difficulty === "medium") {
+        correctAnswer = num1 * num2;
+        questionText = `${num1} × ${num2} = ?`;
+    } else {
+        correctAnswer = Math.pow(num1, 2) - num2; 
+        questionText = `${num1}² - ${num2} = ?`;
+    }
+
+    document.getElementById("questionText").innerText = questionText;
+
+    let choices = [correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 2];
+    choices.sort(() => Math.random() - 0.5);
+
+    let answerContainer = document.getElementById("answerChoices");
+    answerContainer.innerHTML = "";
+
+    choices.forEach(choice => {
+        let btn = document.createElement("button");
+        btn.innerText = choice;
+        btn.className = "answer-btn";
+        btn.addEventListener("click", () => checkAnswer(btn, correctAnswer));
+        answerContainer.appendChild(btn);
+    });
+
+    resetTimer();
+}
+
+function checkAnswer(selectedBtn, correctAnswer) {
+    if (parseInt(selectedBtn.innerText) !== correctAnswer) {
+        selectedBtn.classList.add("wrong-answer");
+        setTimeout(() => selectedBtn.classList.remove("wrong-answer"), 300);
+    } else {
+        score++;
+    }
+
+    questionIndex++;
+    if (questionIndex < 10) {
+        generateQuestion(currentDifficulty);
+    } else {
+        endGame();
+    }
+}
+
+function resetTimer() {
+    clearInterval(timer);
+    timeLeft = 15;
+    document.getElementById("timeLeft").innerText = timeLeft;
+    
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timeLeft").innerText = timeLeft;
+
+        if (timeLeft === 0) {
+            questionIndex++;
+            if (questionIndex < 10) {
+                generateQuestion(currentDifficulty);
+            } else {
+                endGame();
+            }
+        }
+    }, 1000);
+}
+
+function endGame() {
+    clearInterval(timer);
+    document.getElementById("gameSection").style.display = "none";
+    document.getElementById("highScores").style.display = "block";
+
+    addPlayerScore(playerName, score, currentDifficulty); // Add score to leaderboard
+}
+
+function addPlayerScore(name, score, difficulty) {
+    playerScores.push({ name: name, score: score, difficulty: difficulty });
+    updateRankings();
+}
+
+function updateRankings() {
+    // Sort scores in descending order
+    playerScores.sort((a, b) => b.score - a.score);
+    displayRankings();
+}
+
+function displayRankings() {
+    const scoreTable = document.getElementById('scoreTable');
+    scoreTable.innerHTML = ''; // Clear previous rankings
+
+    playerScores.forEach((player, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${index + 1}</td><td>${player.name}</td><td>${player.score}</td><td>${player.difficulty}</td>`;
+        scoreTable.appendChild(row);
+    });
+}
+
+document.getElementById("retry").addEventListener("click", () => {
+    document.getElementById("highScores").style.display = "none";
+    document.getElementById("difficultySelection").style.display = "block";
+    document.getElementById("scoreTable").innerHTML = ""; // Clear scores
+    score = 0; // Reset score
+    questionIndex = 0; // Reset question index
+});
+
+document.getElementById("quit").addEventListener("click", () => {
+    document.getElementById("highScores").style.display = "none";
+    document.getElementById("nameInputSection").style.display = "block";
+    document.getElementById("scoreTable").innerHTML = ""; // Clear scores
+});
