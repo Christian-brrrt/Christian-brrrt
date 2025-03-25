@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Problem Solver</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a071d;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .table-container {
+            background: #2d102f;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #d472a6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Math Problem Solver</h1>
+    
+    <div id="nameInputSection">
+        <label for="playerName">Please Enter Your Name:</label>
+        <input type="text" id="playerName">
+        <button id="nameSubmit">Next</button>
+    </div>
+
+    <div id="difficultySelection" style="display: none;">
+        <h2>Select Difficulty:</h2>
+        <button class="difficulty-btn" data-mode="easy">Easy</button>
+        <button class="difficulty-btn" data-mode="medium">Medium</button>
+        <button class="difficulty-btn" data-mode="hard">Hard</button>
+    </div>
+
+    <div id="gameSection" style="display: none;">
+        <h2 id="questionText">Question</h2>
+        <div id="answerChoices"></div>
+        <p id="timer">Time left: <span id="timeLeft">15</span>s</p>
+        <div class="center-buttons">
+            <button id="next" style="display: none;">Next</button>
+        </div>
+    </div>
+
+    <div id="highScores" style="display: none;">
+        <h2>High Scores</h2>
+        <div class="container">
+            <div class="table-container">
+                <h2>Easy Rankings</h2>
+                <table>
+                    <tr>
+                        <th>Rank</th><th>Name</th><th>Score</th><th>Difficulty</th>
+                    </tr>
+                    <tbody id="easyScores"></tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <h2>Medium Rankings</h2>
+                <table>
+                    <tr>
+                        <th>Rank</th><th>Name</th><th>Score</th><th>Difficulty</th>
+                    </tr>
+                    <tbody id="mediumScores"></tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <h2>Hard Rankings</h2>
+                <table>
+                    <tr>
+                        <th>Rank</th><th>Name</th><th>Score</th><th>Difficulty</th>
+                    </tr>
+                    <tbody id="hardScores"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="center-buttons">
+            <button id="retry">Retry</button>
+            <button id="quit">Quit</button>
+            <button id="overallScore">Overall Score</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
